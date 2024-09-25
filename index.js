@@ -1,7 +1,7 @@
 require("dotenv").config();
-const {startOptions} = require('./options');
-
 const TelegramApi = require("node-telegram-bot-api");
+const sequelize = require('./db');
+const userModel = require('./models');
 
 const token = process.env.TOKEN;
 
@@ -11,14 +11,28 @@ let sentMessages = {};
 let writeMessages = {};
 let notABots = {};
 let noYoutube = {};
+const airdropStart = true;
 
 bot.on("message", (msg) => {
   const text = msg.text;
   const chatId = msg.chat.id;
 
-  const start = async () => {
-    const airdropStart = true;
+  // const connectionToBd = async () => {
+  //   try {
+  //     await sequelize.authenticate();
+  //     await sequelize.sync();
+  //   } catch (error) {
+  //     console.log("Подключение к БД не работает!", error);
+  //   }
+  // }
 
+  const start = async () => {
+    try {
+      await sequelize.authenticate();
+      await sequelize.sync();
+    } catch (error) {
+      console.log("Подключение к БД не работает!", error);
+    }
     if (airdropStart) {
       if (text === "/start" && !notABots[chatId]) {
         sentMessages[chatId] = await bot.sendMessage(
@@ -39,6 +53,7 @@ bot.on("message", (msg) => {
     } else {
       bot.sendMessage(chatId, "Airdrop закончен!");
     }
+    // connectionToBd();
   };
 
   start();
@@ -86,7 +101,15 @@ bot.on("callback_query", async (msg) => {
 
 🏆🏆 The first 100 people will receive rewards from $10 to $100 depending on the quality of the video.
 
-🏆🏆🏆 3 participants will receive rewards of $100, 300, 500 for the best videos!`, startOptions)
+🏆🏆🏆 3 participants will receive rewards of $100, 300, 500 for the best videos!`, {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: "Ready?", callback_data: "ready" },
+          ],
+        ],
+      },
+    })
   }
 
   if(data === "ready") {
@@ -190,8 +213,7 @@ bot.on("callback_query", async (msg) => {
     bot.deleteMessage(chatId, writeMessages[chatId].message_id);
     console.log("Messeges >>>", sentMessages[chatId], "Write >>>", writeMessages[chatId])
     sentMessages[chatId] = await bot.sendMessage(chatId, `Enter the link to your Retweet:`);
-
-    bot.once('message', async (msg) => {
+    bot.once('message',async (msg) => {
       const linkRetweet = msg.text;
 
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered:: ${linkRetweet}`, {
