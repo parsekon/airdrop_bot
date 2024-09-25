@@ -17,14 +17,17 @@ bot.on("message", (msg) => {
   const text = msg.text;
   const chatId = msg.chat.id;
 
-  const connectionToBd = async () => {
+  const initDbConnection = async () => {
     try {
       await sequelize.authenticate();
       await sequelize.sync();
+      console.log("Соединение с БД установлено");
     } catch (error) {
-      console.log("Подключение к БД не работает!", error);
+      console.log("Не удалось подключиться к БД", error);
     }
-  }
+  };
+  
+  initDbConnection();
 
   const start = async () => {
     if (airdropStart) {
@@ -47,7 +50,6 @@ bot.on("message", (msg) => {
     } else {
       bot.sendMessage(chatId, "Airdrop закончен!");
     }
-    connectionToBd();
   };
 
   start();
