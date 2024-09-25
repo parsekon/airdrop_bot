@@ -1,4 +1,6 @@
-const sequelize = new Sequelize({
+const {Sequelize} = require('sequelize');
+
+module.exports = new Sequelize({
     dialect: 'postgres',
     database: process.env.USER,
     user: process.env.USER,
