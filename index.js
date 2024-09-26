@@ -2,7 +2,6 @@ require("dotenv").config();
 const TelegramApi = require("node-telegram-bot-api");
 const sequelize = require('./db');
 const UserModel = require('./models');
-const { where } = require("sequelize");
 
 const token = process.env.TOKEN;
 
@@ -33,11 +32,11 @@ bot.on("message", (msg) => {
   const start = async () => {
     if (airdropStart) {
 
-      // let user = await UserModel.findOne({ where: { chatId }});
+      let user = await UserModel.findOne({ chatId });
 
-      // if(!user) {
-      //   user = await UserModel.create({ chatId: chatId.toString(), telegram: msg.from.username });
-      // }
+      if(!user) {
+        user = await UserModel.create({ chatId: chatId.toString(), telegram: msg.from.username });
+      }
 
       if (text === "/start" && !notABots[chatId]) {
         sentMessages[chatId] = await bot.sendMessage(
