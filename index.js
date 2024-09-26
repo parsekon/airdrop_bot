@@ -35,9 +35,9 @@ bot.on("message", (msg) => {
 
       let user = await UserModel.findOne({ where: { chatId }});
 
-      if(!user) {
-        user = await UserModel.create({ chatId: chatId.toString(), telegram: msg.from.username });
-      }
+      // if(!user) {
+      //   user = await UserModel.create({ chatId: chatId.toString(), telegram: msg.from.username });
+      // }
 
       console.log("USER >>>", user);
 
