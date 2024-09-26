@@ -231,13 +231,13 @@ bot.on("callback_query", async (msg) => {
     bot.once('message',async (msg) => {
       const linkRetweet = msg.text;
 
-      // let user = await UserModel.findOne({ where: { chatId: chatId.toString() } });
+      let user = await UserModel.findOne({ where: { chatId: chatId.toString() } });
 
-      // if(user) {
-      //   await user.update({ retweet: linkRetweet });
-      // }
+      if(user) {
+        await user.update({ retweet: linkRetweet });
+      }
 
-      // console.log("USER 3>>>", user);
+      console.log("USER 3>>>", user);
 
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered:: ${linkRetweet}`, {
         reply_markup: {
@@ -258,13 +258,13 @@ bot.on("callback_query", async (msg) => {
     bot.once('message', async (msg) => {
       const linkYoutubeVideo = msg.text;
 
-      // let user = await UserModel.findOne({ chatId });
+      let user = await UserModel.findOne({ chatId });
 
-      // if(user) {
-      //   await user.update({ youtube: linkYoutubeVideo });
-      // }
+      if(user) {
+        await user.update({ youtube: linkYoutubeVideo });
+      }
 
-      // console.log("USER 3>>>", user);
+      console.log("USER 3>>>", user);
 
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered: ${linkYoutubeVideo}`, {
         reply_markup: {
@@ -285,13 +285,13 @@ bot.on("callback_query", async (msg) => {
     bot.once('message', async (msg) => {
       const addressWallet = msg.text;
 
-      // let user = await UserModel.findOne({ chatId });
+      let user = await UserModel.findOne({ chatId });
 
-      // if(user) {
-      //   await user.update({ wallet: addressWallet });
-      // }
+      if(user) {
+        await user.update({ wallet: addressWallet });
+      }
 
-      // console.log("USER 4 >>>", user);
+      console.log("USER 4 >>>", user);
 
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered: ${addressWallet}`, {
         reply_markup: {
