@@ -32,11 +32,12 @@ bot.on("message", (msg) => {
 
   const start = async () => {
     if (airdropStart) {
+      const chatIdStr = chatId.toString();
 
-      let user = await UserModel.findOne({ where: { chatId }});
+      let user = await UserModel.findOne({ where: { chatIdStr }});
 
       if(!user) {
-        user = await UserModel.create({ chatId: chatId.toString(), telegram: msg.from.username });
+        user = await UserModel.create({ chatId: chatIdStr, telegram: msg.from.username });
       }
 
       console.log("USER >>>", user);
