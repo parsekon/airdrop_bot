@@ -1,7 +1,7 @@
 require("dotenv").config();
 const TelegramApi = require("node-telegram-bot-api");
-const sequelize = require('./db');
-const UserModel = require('./models');
+const sequelize = require("./db");
+const UserModel = require("./models");
 
 const token = process.env.TOKEN;
 
@@ -31,13 +31,17 @@ bot.on("message", (msg) => {
 
   const start = async () => {
     if (airdropStart) {
-
-      let user = await UserModel.findOne({ where: { chatId: chatId.toString() } });
+      let user = await UserModel.findOne({
+        where: { chatId: chatId.toString() },
+      });
 
       // let user = await UserModel.findOne({ chatId });
 
-      if(!user) {
-        user = await UserModel.create({ chatId: chatId.toString(), telegram: msg.from.username });
+      if (!user) {
+        user = await UserModel.create({
+          chatId: chatId.toString(),
+          telegram: msg.from.username,
+        });
       }
 
       console.log("USER >>>", user);
@@ -51,7 +55,7 @@ bot.on("message", (msg) => {
               inline_keyboard: [
                 [
                   { text: "I'm not a bot", callback_data: "human" },
-                  { text: "I'm a bot", callback_data: "nothuman" }
+                  { text: "I'm a bot", callback_data: "nothuman" },
                 ],
               ],
             },
@@ -65,7 +69,6 @@ bot.on("message", (msg) => {
 
   start();
 });
-
 
 bot.on("callback_query", async (msg) => {
   const data = msg.data;
@@ -88,7 +91,9 @@ bot.on("callback_query", async (msg) => {
   if (data === "human") {
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
     notABots[chatId] = true;
-    bot.sendMessage(chatId, `👍 That's correct, ${msg.from.username}!
+    bot.sendMessage(
+      chatId,
+      `👍 That's correct, ${msg.from.username}!
   
 ✍️  The first 1000 valid participants will be rewarded.
 
@@ -108,209 +113,261 @@ bot.on("callback_query", async (msg) => {
 
 🏆🏆 The first 100 people will receive rewards from $10 to $100 depending on the quality of the video.
 
-🏆🏆🏆 3 participants will receive rewards of $100, 300, 500 for the best videos!`, {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "Ready?", callback_data: "ready" },
-          ],
-        ],
-      },
-    })
+🏆🏆🏆 3 participants will receive rewards of $100, 300, 500 for the best videos!`,
+      {
+        reply_markup: {
+          inline_keyboard: [[{ text: "Ready?", callback_data: "ready" }]],
+        },
+      }
+    );
   }
 
-  if(data === "ready") {
-    sentMessages[chatId] = await bot.sendMessage(chatId, 'Join our chat:', {
+  if (data === "ready") {
+    sentMessages[chatId] = await bot.sendMessage(chatId, "Join our chat:", {
       reply_markup: {
         inline_keyboard: [
-          [
-            { text: "Telegram Chat", url: process.env.TELEGRAMGROUP }],
-            [{text: "next step ➡️", callback_data: "twitter"}
-          ],
+          [{ text: "Telegram Chat", url: process.env.TELEGRAMGROUP }],
+          [{ text: "next step ➡️", callback_data: "twitter" }],
         ],
       },
-    })
+    });
   }
 
-  if(data === "twitter") {
+  if (data === "twitter") {
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
-    sentMessages[chatId] = await bot.sendMessage(chatId, 'Join our Twitter:', {
+    sentMessages[chatId] = await bot.sendMessage(chatId, "Join our Twitter:", {
       reply_markup: {
         inline_keyboard: [
+          [{ text: "Twitter", url: process.env.TWITTER }],
           [
-            { text: "Twitter", url: process.env.TWITTER },
+            { text: "⬅️ prev step", callback_data: "ready" },
+            { text: "next step ➡️", callback_data: "retweet" },
           ],
-          [
-            {text: "⬅️ prev step", callback_data: "ready"},
-            { text: "next step ➡️", callback_data: "retweet" }
-          ]
         ],
       },
-    })
+    });
   }
 
-  if(data === "retweet") {
+  if (data === "retweet") {
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
-    sentMessages[chatId] = await bot.sendMessage(chatId, 'Make a retweet:', {
+    sentMessages[chatId] = await bot.sendMessage(chatId, "Make a retweet:", {
       reply_markup: {
         inline_keyboard: [
+          [{ text: "Pinned post", url: process.env.RETWEET }],
           [
-            { text: "Pinned post", url: process.env.RETWEET },
+            { text: "⬅️ prev step", callback_data: "twitter" },
+            { text: "next step ➡️", callback_data: "youtube" },
           ],
-          [
-            {text: "⬅️ prev step", callback_data: "twitter"},
-            { text: "next step ➡️", callback_data: "youtube" }
-          ]
         ],
       },
-    })
+    });
   }
 
-  if(data === "youtube") {
+  if (data === "youtube") {
     noYoutube[chatId] = false;
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
-    sentMessages[chatId] = await bot.sendMessage(chatId, 'Have you made a video yet?', {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "Yep!",  callback_data: "submit"},
-            { text: "Maybe later", callback_data: "submitNoYoutube" }
+    sentMessages[chatId] = await bot.sendMessage(
+      chatId,
+      "Have you made a video yet?",
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: "Yep!", callback_data: "submit" },
+              { text: "Maybe later", callback_data: "submitNoYoutube" },
+            ],
+            [{ text: "⬅️ prev step", callback_data: "retweet" }],
           ],
-          [{text: "⬅️ prev step", callback_data: "retweet"}],
-        ],
-      },
-    })
+        },
+      }
+    );
   }
 
-  if(data === "submitNoYoutube") {
+  if (data === "submitNoYoutube") {
     noYoutube[chatId] = true;
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
-    sentMessages[chatId] = await bot.sendMessage(chatId, `Take a video and come back! We'll wait for you.`, {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "⬅️ prev step",  callback_data: "youtube"},
-            { text: "No video",  callback_data: "submit"},
-          ]
-        ],
-      },
-    })
+    sentMessages[chatId] = await bot.sendMessage(
+      chatId,
+      `Take a video and come back! We'll wait for you.`,
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: "⬅️ prev step", callback_data: "youtube" },
+              { text: "No video", callback_data: "submit" },
+            ],
+          ],
+        },
+      }
+    );
   }
 
-  if(data === "submit") {
+  if (data === "submit") {
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
-    sentMessages[chatId] = await bot.sendMessage(chatId, `Ok! Let's keep your contacts. Enter the link to your Twitter account:`);
-    bot.once('message', async (msg) => {
+    sentMessages[chatId] = await bot.sendMessage(
+      chatId,
+      `Ok! Let's keep your contacts. Enter the link to your Twitter account:`
+    );
+    bot.once("message", async (msg) => {
       const userTwitter = msg.text;
 
-      let user = await UserModel.findOne({ where: { chatId: chatId.toString() } });
+      let user = await UserModel.findOne({
+        where: { chatId: chatId.toString() },
+      });
 
-      if(user) {
+      if (user) {
         await user.update({ twitter: userTwitter });
       }
 
       console.log("USER_2 >>>", user);
 
-      writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered:: ${userTwitter}`, {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              { text: "edit",  callback_data: "submit"},
-              { text: "ok",  callback_data: "submitRetweet"}
-            ]
-          ],
-        },
-      });
+      writeMessages[chatId] = await bot.sendMessage(
+        chatId,
+        `You have entered:: ${userTwitter}`,
+        {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: "edit", callback_data: "submit" },
+                { text: "ok", callback_data: "submitRetweet" },
+              ],
+            ],
+          },
+        }
+      );
     });
   }
 
-  if(data === "submitRetweet") {
+  if (data === "submitRetweet") {
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
     bot.deleteMessage(chatId, writeMessages[chatId].message_id);
-   
-    sentMessages[chatId] = await bot.sendMessage(chatId, `Enter the link to your Retweet:`);
-    bot.once('message',async (msg) => {
+
+    sentMessages[chatId] = await bot.sendMessage(
+      chatId,
+      `Enter the link to your Retweet:`
+    );
+    bot.once("message", async (msg) => {
       const linkRetweet = msg.text;
 
-      let user = await UserModel.findOne({ where: { chatId: chatId.toString() } });
+      let user = await UserModel.findOne({
+        where: { chatId: chatId.toString() },
+      });
 
-      if(user) {
+      if (user) {
         await user.update({ retweet: linkRetweet });
       }
 
       console.log("USER 3>>>", user);
 
-      writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered:: ${linkRetweet}`, {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              { text: "edit",  callback_data: "submitRetweet"},
-              { text: "ok",  callback_data: "submitWalletOrYoutube" }
-            ]
-          ],
-        },
-      });
+      writeMessages[chatId] = await bot.sendMessage(
+        chatId,
+        `You have entered:: ${linkRetweet}`,
+        {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: "edit", callback_data: "submitRetweet" },
+                { text: "ok", callback_data: "submitWalletOrYoutube" },
+              ],
+            ],
+          },
+        }
+      );
     });
   }
 
   if (data === "submitWalletOrYoutube" && !noYoutube[chatId]) {
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
     bot.deleteMessage(chatId, writeMessages[chatId].message_id);
-    sentMessages[chatId] = await bot.sendMessage(chatId, "Enter the link to your Youtube video:");
-    bot.once('message', async (msg) => {
+    sentMessages[chatId] = await bot.sendMessage(
+      chatId,
+      "Enter the link to your Youtube video:"
+    );
+    bot.once("message", async (msg) => {
       const linkYoutubeVideo = msg.text;
 
-      let user = await UserModel.findOne({ chatId });
+      let user = await UserModel.findOne({
+        where: { chatId: chatId.toString() },
+      });
 
-      if(user) {
+      if (user) {
         await user.update({ youtube: linkYoutubeVideo });
       }
 
       console.log("USER 3>>>", user);
 
-      writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered: ${linkYoutubeVideo}`, {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              { text: "edit",  callback_data: "submitWalletOrYoutube"},
-              { text: "ok",  callback_data: "submitAddressWallet" }
-            ]
-          ],
-        },
-      })
-    })
+      writeMessages[chatId] = await bot.sendMessage(
+        chatId,
+        `You have entered: ${linkYoutubeVideo}`,
+        {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: "edit", callback_data: "submitWalletOrYoutube" },
+                { text: "ok", callback_data: "submitAddressWallet" },
+              ],
+            ],
+          },
+        }
+      );
+    });
   }
 
-  if ((data === "submitAddressWallet") || (noYoutube[chatId] && data === "submitWalletOrYoutube")) {
+  if (
+    data === "submitAddressWallet" ||
+    (noYoutube[chatId] && data === "submitWalletOrYoutube")
+  ) {
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
     bot.deleteMessage(chatId, writeMessages[chatId].message_id);
-    sentMessages[chatId] = await bot.sendMessage(chatId, `Enter your ${process.env.CHAIN} wallet:`);
-    bot.once('message', async (msg) => {
+    sentMessages[chatId] = await bot.sendMessage(
+      chatId,
+      `Enter your ${process.env.CHAIN} wallet:`
+    );
+    bot.once("message", async (msg) => {
       const addressWallet = msg.text;
 
-      let user = await UserModel.findOne({ chatId });
+      let user = await UserModel.findOne({
+        where: { chatId: chatId.toString() },
+      });
 
-      if(user) {
+      if (user) {
         await user.update({ wallet: addressWallet });
       }
 
       console.log("USER 4 >>>", user);
 
-      writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered: ${addressWallet}`, {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              { text: "edit",  callback_data: "submitAddressWallet"},
-              { text: "ok",  callback_data: "submitAll" }
-            ]
-          ],
-        },
-      })
-    })
+      writeMessages[chatId] = await bot.sendMessage(
+        chatId,
+        `You have entered: ${addressWallet}`,
+        {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: "edit", callback_data: "submitAddressWallet" },
+                { text: "ok", callback_data: "submitAll" },
+              ],
+            ],
+          },
+        }
+      );
+    });
   }
 
   if (data === "submitAll") {
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
-    bot.sendMessage(chatId, `Congratulations, you will be one of the first to receive tokens!`);
+
+    let user = await UserModel.findOne({
+      where: { chatId: chatId.toString() },
+    });
+
+    bot.sendMessage(
+      chatId,
+      `Congratulations, you will be one of the first to receive tokens!
+    Your Twitter: ${user.twitter}
+    Your retweet: ${user.retweet}
+    Your video: ${user.youtube ?? "no"}
+    Your wallet: ${user.wallet}
+    `
+    );
   }
 });
