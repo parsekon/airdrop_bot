@@ -33,7 +33,7 @@ bot.on("message", (msg) => {
   const start = async () => {
     if (airdropStart) {
 
-      let user = await UserModel.findOne(({ where: { chatId }}));
+      let user = await UserModel.findOne({ where: { chatId }});
 
       if(!user) {
         user = await UserModel.create({ chatId, telegram: msg.from.username });
