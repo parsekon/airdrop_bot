@@ -244,7 +244,8 @@ bot.on("callback_query", async (msg) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "ok",  callback_data: "submitWalletOrYoutube" },
+              { text: "edit",  callback_data: "submitRetweet"},
+              { text: "ok",  callback_data: "submitWalletOrYoutube" }
             ]
           ],
         },
@@ -271,7 +272,8 @@ bot.on("callback_query", async (msg) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "ok",  callback_data: "submitAddressWallet" },
+              { text: "edit",  callback_data: "submitWalletOrYoutube"},
+              { text: "ok",  callback_data: "submitAddressWallet" }
             ]
           ],
         },
@@ -298,7 +300,8 @@ bot.on("callback_query", async (msg) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "ok",  callback_data: "submitAll" },
+              { text: "edit",  callback_data: "submitAddressWallet"},
+              { text: "ok",  callback_data: "submitAll" }
             ]
           ],
         },
