@@ -39,6 +39,8 @@ bot.on("message", (msg) => {
         user = await UserModel.create({ chatId, telegram: msg.from.username });
       }
 
+      console.log("USER >>>", user);
+
       if (text === "/start" && !notABots[chatId]) {
         sentMessages[chatId] = await bot.sendMessage(
           chatId,
@@ -200,11 +202,11 @@ bot.on("callback_query", async (msg) => {
     bot.once('message', async (msg) => {
       const userTwitter = msg.text;
 
-      let user = await UserModel.findOne(({ where: { chatId }}));
+      // let user = await UserModel.findOne(({ where: { chatId }}));
 
-      if(!user) {
-        await user[chatId].update({ twitter: userTwitter });
-      }
+      // if(!user) {
+      //   await user[chatId].update({ twitter: userTwitter });
+      // }
       
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered:: ${userTwitter}`, {
         reply_markup: {
@@ -226,11 +228,11 @@ bot.on("callback_query", async (msg) => {
     bot.once('message',async (msg) => {
       const linkRetweet = msg.text;
 
-      let user = await UserModel.findOne(({ where: { chatId }}));
+      // let user = await UserModel.findOne(({ where: { chatId }}));
 
-      if(!user) {
-        await user[chatId].update({ retweet: linkRetweet });
-      }
+      // if(!user) {
+      //   await user[chatId].update({ retweet: linkRetweet });
+      // }
 
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered:: ${linkRetweet}`, {
         reply_markup: {
@@ -251,11 +253,11 @@ bot.on("callback_query", async (msg) => {
     bot.once('message', async (msg) => {
       const linkYoutubeVideo = msg.text;
 
-      let user = await UserModel.findOne(({ where: { chatId }}));
+      // let user = await UserModel.findOne(({ where: { chatId }}));
 
-      if(!user) {
-        await user[chatId].update({ youtube: linkYoutubeVideo });
-      }
+      // if(!user) {
+      //   await user[chatId].update({ youtube: linkYoutubeVideo });
+      // }
 
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered: ${linkYoutubeVideo}`, {
         reply_markup: {
@@ -276,11 +278,11 @@ bot.on("callback_query", async (msg) => {
     bot.once('message', async (msg) => {
       const addressWallet = msg.text;
 
-      let user = await UserModel.findOne(({ where: { chatId }}));
+      // let user = await UserModel.findOne(({ where: { chatId }}));
 
-      if(!user) {
-        await user[chatId].update({ wallet: addressWallet });
-      }
+      // if(!user) {
+      //   await user[chatId].update({ wallet: addressWallet });
+      // }
 
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered: ${addressWallet}`, {
         reply_markup: {
