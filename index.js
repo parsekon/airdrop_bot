@@ -1,7 +1,8 @@
 require("dotenv").config();
 const TelegramApi = require("node-telegram-bot-api");
 const sequelize = require('./db');
-const userModel = require('./models');
+const UserModel = require('./models');
+const { where } = require("sequelize");
 
 const token = process.env.TOKEN;
 
@@ -26,11 +27,18 @@ bot.on("message", (msg) => {
       console.log("Не удалось подключиться к БД", error);
     }
   };
-  
+
   initDbConnection();
 
   const start = async () => {
     if (airdropStart) {
+
+      let user = await UserModel.findOne(({ where: { chatId }}));
+
+      if(!user) {
+        user = await UserModel.create({ chatId, telegram: msg.from.username });
+      }
+
       if (text === "/start" && !notABots[chatId]) {
         sentMessages[chatId] = await bot.sendMessage(
           chatId,
@@ -40,7 +48,7 @@ bot.on("message", (msg) => {
               inline_keyboard: [
                 [
                   { text: "I'm not a bot", callback_data: "human" },
-                  { text: "I'm a bot", callback_data: "nothuman" },
+                  { text: "I'm a bot", callback_data: "nothuman" }
                 ],
               ],
             },
@@ -192,6 +200,12 @@ bot.on("callback_query", async (msg) => {
     bot.once('message', async (msg) => {
       const userTwitter = msg.text;
 
+      let user = await UserModel.findOne(({ where: { chatId }}));
+
+      if(!user) {
+        await user[chatId].update({ twitter: userTwitter });
+      }
+      
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered:: ${userTwitter}`, {
         reply_markup: {
           inline_keyboard: [
@@ -207,10 +221,16 @@ bot.on("callback_query", async (msg) => {
   if(data === "submitRetweet") {
     bot.deleteMessage(chatId, sentMessages[chatId].message_id);
     bot.deleteMessage(chatId, writeMessages[chatId].message_id);
-    console.log("Messeges >>>", sentMessages[chatId], "Write >>>", writeMessages[chatId])
+   
     sentMessages[chatId] = await bot.sendMessage(chatId, `Enter the link to your Retweet:`);
     bot.once('message',async (msg) => {
       const linkRetweet = msg.text;
+
+      let user = await UserModel.findOne(({ where: { chatId }}));
+
+      if(!user) {
+        await user[chatId].update({ retweet: linkRetweet });
+      }
 
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered:: ${linkRetweet}`, {
         reply_markup: {
@@ -231,6 +251,12 @@ bot.on("callback_query", async (msg) => {
     bot.once('message', async (msg) => {
       const linkYoutubeVideo = msg.text;
 
+      let user = await UserModel.findOne(({ where: { chatId }}));
+
+      if(!user) {
+        await user[chatId].update({ youtube: linkYoutubeVideo });
+      }
+
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered: ${linkYoutubeVideo}`, {
         reply_markup: {
           inline_keyboard: [
@@ -249,6 +275,12 @@ bot.on("callback_query", async (msg) => {
     sentMessages[chatId] = await bot.sendMessage(chatId, `Enter your ${process.env.CHAIN} wallet:`);
     bot.once('message', async (msg) => {
       const addressWallet = msg.text;
+
+      let user = await UserModel.findOne(({ where: { chatId }}));
+
+      if(!user) {
+        await user[chatId].update({ wallet: addressWallet });
+      }
 
       writeMessages[chatId] = await bot.sendMessage(chatId, `You have entered: ${addressWallet}`, {
         reply_markup: {
