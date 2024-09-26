@@ -38,6 +38,8 @@ bot.on("message", (msg) => {
         user = await UserModel.create({ chatId: chatId.toString(), telegram: msg.from.username });
       }
 
+      console.log("USER >>>", user);
+
       if (text === "/start" && !notABots[chatId]) {
         sentMessages[chatId] = await bot.sendMessage(
           chatId,
