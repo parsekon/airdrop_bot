@@ -78,18 +78,24 @@ bot.on("message", async (msg) => {
     where: { chatId: chatId.toString() },
   });
 
-
   if (text === "Social") {
-    bot.sendMessage(chatId, `Site: http://lunar-sphinx.com
+    bot.sendMessage(
+      chatId,
+      `Site: http://lunar-sphinx.com
 
       Twitter: https://x.com/Lunar_Sphinx
 
       Telegram: @LunarSphinx777
 
       Smart_contract: https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3
-    `);
+    `, {
+      disable_web_page_preview: true,
+    }
+    );
   } else if (text === "Airdrop") {
-    bot.sendMessage(chatId, `
+    bot.sendMessage(
+      chatId,
+      `
     Your Twitter: ${user.twitter}
     Your retweet: ${user.retweet}
     Your video: ${user.youtube ?? "no"}
@@ -97,9 +103,10 @@ bot.on("message", async (msg) => {
     `,
       {
         disable_web_page_preview: true,
-      })
+      }
+    );
   }
-})
+});
 
 bot.on("callback_query", async (msg) => {
   const data = msg.data;
@@ -402,13 +409,10 @@ bot.on("callback_query", async (msg) => {
       {
         disable_web_page_preview: true,
         reply_markup: {
-          keyboard: [
-            [{ text: "Social"}],
-            [{ text: "Airdrop" }]
-        ],
+          keyboard: [[{ text: "Social" }], [{ text: "Airdrop" }]],
+          resize_keyboard: true
         },
       }
     );
   }
-
 });
