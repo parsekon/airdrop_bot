@@ -367,7 +367,52 @@ bot.on("callback_query", async (msg) => {
     Your retweet: ${user.retweet}
     Your video: ${user.youtube ?? "no"}
     Your wallet: ${user.wallet}
-    `
+    `,
+      {
+        disable_web_page_preview: true,
+      },
+      {
+        reply_markup: {
+          keyboard: [
+            [{ text: "Social", callback_data: "social" }],
+            [{ text: "Your data", callback_data: "your_data" }]
+        ],
+        },
+      }
     );
   }
+
+  if(data === "your_data") {
+    let user = await UserModel.findOne({
+      where: { chatId: chatId.toString() },
+    });
+
+    bot.sendMessage(
+      chatId,
+      `
+    Your Twitter: ${user.twitter}
+    Your retweet: ${user.retweet}
+    Your video: ${user.youtube ?? "no"}
+    Your wallet: ${user.wallet}
+    `,
+      {
+        disable_web_page_preview: true,
+      }
+    )
+  }
+
+  if (data === "social") {
+    bot.sendMessage(chatId, `
+      Site: http://lunar-sphinx.com
+
+      Twitter: https://x.com/Lunar_Sphinx
+
+      Telegram: @LunarSphinx777
+
+      Smart_contract: https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3
+    `, {
+      disable_web_page_preview: true
+    })
+  }
+
 });
