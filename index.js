@@ -70,6 +70,37 @@ bot.on("message", (msg) => {
   start();
 });
 
+bot.on("message", async (msg) => {
+  const chatId = msg.chat.id;
+  const text = msg.text;
+
+  let user = await UserModel.findOne({
+    where: { chatId: chatId.toString() },
+  });
+
+
+  if (text === "Social") {
+    bot.sendMessage(chatId, `Site: http://lunar-sphinx.com
+
+      Twitter: https://x.com/Lunar_Sphinx
+
+      Telegram: @LunarSphinx777
+
+      Smart_contract: https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3
+    `);
+  } else if (text === "Airdrop") {
+    bot.sendMessage(chatId, `
+    Your Twitter: ${user.twitter}
+    Your retweet: ${user.retweet}
+    Your video: ${user.youtube ?? "no"}
+    Your wallet: ${user.wallet}
+    `,
+      {
+        disable_web_page_preview: true,
+      })
+  }
+})
+
 bot.on("callback_query", async (msg) => {
   const data = msg.data;
   const chatId = msg.message.chat.id;
@@ -370,49 +401,14 @@ bot.on("callback_query", async (msg) => {
     `,
       {
         disable_web_page_preview: true,
-      },
-      {
         reply_markup: {
           keyboard: [
-            [{ text: "Social", callback_data: "social" }],
-            [{ text: "Your data", callback_data: "your_data" }]
+            [{ text: "Social"}],
+            [{ text: "Airdrop" }]
         ],
         },
       }
     );
-  }
-
-  if(data === "your_data") {
-    let user = await UserModel.findOne({
-      where: { chatId: chatId.toString() },
-    });
-
-    bot.sendMessage(
-      chatId,
-      `
-    Your Twitter: ${user.twitter}
-    Your retweet: ${user.retweet}
-    Your video: ${user.youtube ?? "no"}
-    Your wallet: ${user.wallet}
-    `,
-      {
-        disable_web_page_preview: true,
-      }
-    )
-  }
-
-  if (data === "social") {
-    bot.sendMessage(chatId, `
-      Site: http://lunar-sphinx.com
-
-      Twitter: https://x.com/Lunar_Sphinx
-
-      Telegram: @LunarSphinx777
-
-      Smart_contract: https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3
-    `, {
-      disable_web_page_preview: true
-    })
   }
 
 });
