@@ -88,9 +88,10 @@ bot.on("message", async (msg) => {
       Telegram: @LunarSphinx777
 
       Smart_contract: https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3
-    `, {
-      disable_web_page_preview: true,
-    }
+    `,
+      {
+        disable_web_page_preview: true,
+      }
     );
   } else if (text === "Airdrop") {
     bot.sendMessage(
@@ -400,17 +401,22 @@ bot.on("callback_query", async (msg) => {
 
     bot.sendMessage(
       chatId,
-      `Congratulations, you will be one of the first to receive tokens!
-    Your Twitter: ${user.twitter}
-    Your retweet: ${user.retweet}
-    Your video: ${user.youtube ?? "no"}
-    Your wallet: ${user.wallet}
+      `🎉 <b>Congratulations</b>, you will be one of the first to receive tokens!
+    <b>Your Twitter:</b> <a href="${user.twitter}">${user.twitter}</a>
+    <b>Your Retweet:</b> <a href="${user.retweet}">${user.retweet}</a>
+    <b>Your Video:</b> ${
+      user.youtube
+        ? `<a href="${user.youtube}">${user.youtube}</a>`
+        : "No video"
+    }
+    <b>Your Wallet:</b> ${user.wallet}
     `,
       {
+        parse_mode: "HTML",
         disable_web_page_preview: true,
         reply_markup: {
           keyboard: [[{ text: "Social" }], [{ text: "Airdrop" }]],
-          resize_keyboard: true
+          resize_keyboard: true,
         },
       }
     );
