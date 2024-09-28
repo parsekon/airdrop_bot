@@ -97,11 +97,11 @@ bot.on("message", async (msg) => {
     bot.sendMessage(
       chatId,
       `
-    <b>Your Twitter:</b> <a href="${user.twitter}">${user.twitter}</a>
+    <b>   Your Twitter:</b> ${user.twitter}
 
-    <b>Your retweet:</b> <a href="${user.retweet}">${user.retweet}</a>
+    <b>Your retweet:</b> ${user.retweet}">${user.retweet}
 
-    <b>Your video:</b> ${user.youtube} ?? "no"}
+    <b>Your video:</b> ${user.youtube ?? "no"}
 
     <b>Your wallet:</b> 
     ${user.wallet}
