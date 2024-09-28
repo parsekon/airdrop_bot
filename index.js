@@ -101,14 +101,14 @@ bot.on("message", async (msg) => {
     bot.sendMessage(
       chatId,
       `
-    <b>   Your Twitter:</b> ${user.twitter}
+    <b>    📱 Your Twitter:</b> ${user.twitter}
 
-    <b>Your retweet:</b> ${user.retweet}">${user.retweet}
+    <b>📎 Your retweet:</b> ${user.retweet}">${user.retweet}
 
-    <b>Your video:</b> ${user.youtube ?? "no"}
+    <b>📺 Your video:</b> ${user.youtube ?? "no"}
 
-    <b>Your wallet:</b> 
-    ${user.wallet}
+    <b>💰 Your wallet:</b> <a href="https://etherscan.io/address/${user.wallet}">${user.wallet}</a>
+    
     `,
       {
         parse_mode: "HTML",
