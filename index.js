@@ -81,7 +81,10 @@ bot.on("message", async (msg) => {
   if (text === "Social") {
     bot.sendMessage(
       chatId,
-      `<b>      🌎 Website:</b> http://lunar-sphinx.com
+      `
+      <b>Our official link:</b>
+
+      <b>🌎 Website:</b> http://lunar-sphinx.com
 
       <b>📱 Twitter:</> https://x.com/Lunar_Sphinx
 
