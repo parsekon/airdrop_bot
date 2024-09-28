@@ -423,13 +423,16 @@ bot.on("callback_query", async (msg) => {
         ? `<a href="${user.youtube}">${user.youtube}</a>`
         : "No video"
     }
-    <b>Your Wallet:</b> ${user.wallet}
+
+    <b>Your Wallet:</b> <a href="https://etherscan.io/address/${user.wallet}">${user.wallet}</a>
     `,
       {
         parse_mode: "HTML",
         disable_web_page_preview: true,
         reply_markup: {
-          keyboard: [[{ text: "Social" }], [{ text: "Airdrop" }]],
+          keyboard: [
+            [{ text: "Social" }], [{ text: "Airdrop" }]
+        ],
           resize_keyboard: true,
         },
       }
