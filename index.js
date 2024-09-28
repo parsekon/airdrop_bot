@@ -82,7 +82,7 @@ bot.on("message", async (msg) => {
     bot.sendMessage(
       chatId,
       `
-      <b>Our official link:</b>
+      <b>Our official link ➡️</b>
 
       <b>🌎 Website:</b> http://lunar-sphinx.com
 
