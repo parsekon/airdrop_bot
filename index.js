@@ -103,7 +103,7 @@ bot.on("message", async (msg) => {
       `
     <b>    📱 Your Twitter:</b> ${user.twitter}
 
-    <b>📎 Your retweet:</b> ${user.retweet}">${user.retweet}
+    <b>📎 Your retweet:</b> ${user.retweet}
 
     <b>📺 Your video:</b> ${user.youtube ?? "no"}
 
