@@ -81,15 +81,16 @@ bot.on("message", async (msg) => {
   if (text === "Social") {
     bot.sendMessage(
       chatId,
-      `Site: http://lunar-sphinx.com
+      `<b>     Website:</b> http://lunar-sphinx.com
 
-      Twitter: https://x.com/Lunar_Sphinx
+      <b>Twitter:</> https://x.com/Lunar_Sphinx
 
-      Telegram: @LunarSphinx777
+      <b>Telegram:</b> @LunarSphinx777
 
-      Smart_contract: https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3
+      <b>Token</b>: <a href="https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3">0x108ce14704263c9e2db314e03929d5cf044756d3</a>
     `,
       {
+        parse_mode: "HTML",
         disable_web_page_preview: true,
       }
     );
