@@ -101,8 +101,8 @@ bot.on("message", async (msg) => {
 
     <b>Your retweet:</b> <a href="${user.retweet}">${user.retweet}</a>
 
-    <b>Your video:</b> ${user.youtube ? '<a href="${user.youtube}">${user.youtube}<a/>' : "no"}
-    
+    <b>Your video:</b> ${user.youtube} ?? "no"}
+
     <b>Your wallet:</b> 
     ${user.wallet}
     `,
