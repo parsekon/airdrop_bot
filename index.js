@@ -81,14 +81,14 @@ bot.on("message", async (msg) => {
   if (text === "Social") {
     bot.sendMessage(
       chatId,
-      `Site: http://lunar-sphinx.com
-
-      Twitter: https://x.com/Lunar_Sphinx
-
+      `Site: <a href="http://lunar-sphinx.com">http://lunar-sphinx.com</a>
+  
+      Twitter: <a href="https://x.com/Lunar_Sphinx">https://x.com/Lunar_Sphinx</a>
+  
       Telegram: @LunarSphinx777
-
-      Smart_contract: https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3
-    `,
+  
+      Smart_contract: <a href="https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3">https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3</a>
+      `,
       {
         parse_mode: "HTML",
         disable_web_page_preview: true,
@@ -98,20 +98,22 @@ bot.on("message", async (msg) => {
     bot.sendMessage(
       chatId,
       `<b>Your Twitter:</b> <a href="${user.twitter}">${user.twitter}</a>
-
+  
       <b>Your retweet:</b> <a href="${user.retweet}">${user.retweet}</a>
-
-      <b>Your video:</b> ${<a href="${user.youtube}">${user.youtube}</a> ?? "no"}">user.youtube ?? "no"}</a>
-
+  
+      <b>Your video:</b> ${
+        user.youtube ? `<a href="${user.youtube}">${user.youtube}</a>` : "no"
+      }
+  
       <b>Your wallet:</b> <a href="${user.wallet}">${user.wallet}</a>
-    `,
+      `,
       {
         parse_mode: "HTML",
         disable_web_page_preview: true,
       }
     );
   }
-});
+  
 
 bot.on("callback_query", async (msg) => {
   const data = msg.data;
