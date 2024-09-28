@@ -90,19 +90,23 @@ bot.on("message", async (msg) => {
       Smart_contract: https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3
     `,
       {
+        parse_mode: "HTML",
         disable_web_page_preview: true,
       }
     );
   } else if (text === "Airdrop") {
     bot.sendMessage(
       chatId,
-      `
-    Your Twitter: ${user.twitter}
-    Your retweet: ${user.retweet}
-    Your video: ${user.youtube ?? "no"}
-    Your wallet: ${user.wallet}
+      `<b>Your Twitter:</b> <a href="${user.twitter}">${user.twitter}</a>
+
+      <b>Your retweet:</b> <a href="${user.retweet}">${user.retweet}</a>
+
+      <b>Your video:</b> ${<a href="${user.youtube}">${user.youtube}</a> ?? "no"}">user.youtube ?? "no"}</a>
+
+      <b>Your wallet:</b> <a href="${user.wallet}">${user.wallet}</a>
     `,
       {
+        parse_mode: "HTML",
         disable_web_page_preview: true,
       }
     );
@@ -401,9 +405,13 @@ bot.on("callback_query", async (msg) => {
 
     bot.sendMessage(
       chatId,
-      `🎉 <b>Congratulations</b>, you will be one of the first to receive tokens!
+      `🎉🎉🎉 <b>Congratulations</b>,
+    you will be one of the first to receive tokens!
+
     <b>Your Twitter:</b> <a href="${user.twitter}">${user.twitter}</a>
+
     <b>Your Retweet:</b> <a href="${user.retweet}">${user.retweet}</a>
+
     <b>Your Video:</b> ${
       user.youtube
         ? `<a href="${user.youtube}">${user.youtube}</a>`
