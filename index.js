@@ -11,13 +11,17 @@ let notABots = {};
 let noYoutube = {};
 let airdropStart = true;
 
+const adminId = process.env.ADMIN_ID;
+
+// Команды администратора
+
 bot.onText(/\/admincommand/, (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
 
   console.log("User ID >>>", userId);
 
-  if (userId.toString() === process.env.ADMIN_ID) {
+  if (userId.toString() === adminId) {
     bot.sendMessage(chatId, 'Вам доступно меню администратора', {
       reply_markup: {
         keyboard: [
@@ -28,6 +32,33 @@ bot.onText(/\/admincommand/, (msg) => {
     });
   }
 });
+
+bot.on("message", async (msg) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const text = msg.text;
+
+  const countUsers = async () => {
+    try {
+      return await UserModel.count();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  if(userId.toString() === adminId) {
+    if(text === "Switch on") {
+      airdropStart = true;
+      return bot.sendMessage(chatId, "Airdrop включен");
+    } else if (text === "Switch off") {
+      airdropStart = false;
+      return bot.sendMessage(chatId, "Airdrop выключен");
+    } else if (text === "Statistics") {
+      const countU = countUsers();
+      bot.sendMessage(chatId, `Количество пользователей: ${countU}`)
+    }
+  }
+})
 
 // Старт бота
 bot.on("message", (msg) => {
