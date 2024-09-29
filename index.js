@@ -2,9 +2,7 @@ require("dotenv").config();
 const TelegramApi = require("node-telegram-bot-api");
 const sequelize = require("./db");
 const UserModel = require("./models");
-
 const token = process.env.TOKEN;
-
 const bot = new TelegramApi(token, { polling: true });
 
 let sentMessages = {};
@@ -13,6 +11,30 @@ let notABots = {};
 let noYoutube = {};
 const airdropStart = true;
 
+// Функции администратора
+
+const isAdmin = async (chatId, userId) => {
+  try {
+    const member = await bot.getChatMember(chatId, userId);
+    return member.status === "administrator" || member.status === "creator";
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+bot.onText(/\/admin/, async (msg) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+
+  const isUserAdmin = await isAdmin(chatId, userId);
+
+  if(isUserAdmin) {
+    bot.sendMessage(chatId, "Подключился админ");
+  }
+});
+
+// Старт бота
 bot.on("message", (msg) => {
   const text = msg.text;
   const chatId = msg.chat.id;
@@ -34,8 +56,6 @@ bot.on("message", (msg) => {
       let user = await UserModel.findOne({
         where: { chatId: chatId.toString() },
       });
-
-      // let user = await UserModel.findOne({ chatId });
 
       if (!user) {
         user = await UserModel.create({
@@ -70,6 +90,7 @@ bot.on("message", (msg) => {
   start();
 });
 
+// Airdrop взаимодействие с пользователем
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
@@ -116,6 +137,8 @@ bot.on("message", async (msg) => {
       }
     );
   }
+
+
 });
 
 bot.on("callback_query", async (msg) => {
