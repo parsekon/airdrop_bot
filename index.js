@@ -9,7 +9,7 @@ let sentMessages = {};
 let writeMessages = {};
 let notABots = {};
 let noYoutube = {};
-const airdropStart = true;
+let airdropStart = true;
 
 bot.onText(/\/admincommand/, (msg) => {
   const chatId = msg.chat.id;
@@ -18,9 +18,14 @@ bot.onText(/\/admincommand/, (msg) => {
   console.log("User ID >>>", userId);
 
   if (userId.toString() === process.env.ADMIN_ID) {
-    bot.sendMessage(chatId, 'Команда выполнена, так как вы администратор.');
-  } else {
-    bot.sendMessage(chatId, 'Эта команда доступна только администраторам.');
+    bot.sendMessage(chatId, 'Вам доступно меню администратора', {
+      reply_markup: {
+        keyboard: [
+          [{text: "Switch on"}, {text: "Switch off"}],
+          [{text: "Statistics"}, {text: "Export Excel"}]
+        ]
+      }
+    });
   }
 });
 
