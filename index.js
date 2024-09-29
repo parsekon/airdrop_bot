@@ -70,7 +70,7 @@ bot.on("message", async (msg) => {
       // Запись CSV в файл
       fs.writeFileSync('users_data.csv', csv);
   
-      bot.on(chatId, "Данные выгружены")
+      bot.sendMessage(chatId, "Данные выгружены")
     } catch (error) {
       console.error('Ошибка при выгрузке данных:', error);
     }
