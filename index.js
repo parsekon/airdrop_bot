@@ -16,21 +16,24 @@ const airdropStart = true;
 const isAdmin = async (chatId, userId) => {
   try {
     const member = await bot.getChatMember(chatId, userId);
-    return member.status === "administrator" || member.status === "creator";
+    return member.status === 'administrator' || member.status === 'creator';
   } catch (error) {
-    console.error(error);
+    console.error('Error checking admin status:', error);
     return false;
   }
-}
+};
 
-bot.onText(/\/admin/, async (msg) => {
+bot.onText(/\/admincommand/, async (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
 
+  // Проверяем, является ли пользователь администратором
   const isUserAdmin = await isAdmin(chatId, userId);
 
-  if(isUserAdmin) {
-    bot.sendMessage(chatId, "Подключился админ");
+  if (isUserAdmin) {
+    bot.sendMessage(chatId, 'Команда выполнена, так как вы администратор.');
+  } else {
+    bot.sendMessage(chatId, 'Эта команда доступна только администраторам.');
   }
 });
 
