@@ -30,6 +30,8 @@ bot.onText(/\/admincommand/, async (msg) => {
   // Проверяем, является ли пользователь администратором
   const isUserAdmin = await isAdmin(chatId, userId);
 
+  console.log("Status >>>", isUserAdmin);
+
   if (isUserAdmin) {
     bot.sendMessage(chatId, 'Команда выполнена, так как вы администратор.');
   } else {
