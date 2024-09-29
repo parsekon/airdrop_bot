@@ -48,6 +48,34 @@ bot.on("message", async (msg) => {
     }
   }
 
+  const exportToCSV = async () => {
+    try {
+      // Подключение к базе данных
+      await sequelize.authenticate();
+  
+      // Получение данных из базы данных
+      const users = await UserModel.findAll();
+  
+      // Преобразование данных в JSON
+      const jsonUsers = users.map(user => user.toJSON());
+  
+      // Определение полей для CSV-файла
+      const fields = ['id', 'username', 'twitter', 'retweet', 'youtube', 'wallet'];
+      const opts = { fields };
+  
+      // Создание CSV с помощью json2csv
+      const parser = new Parser(opts);
+      const csv = parser.parse(jsonUsers);
+  
+      // Запись CSV в файл
+      fs.writeFileSync('users_data.csv', csv);
+  
+      bot.on(chatId, "Данные выгружены")
+    } catch (error) {
+      console.error('Ошибка при выгрузке данных:', error);
+    }
+  };
+
   if(userId.toString() === adminId) {
     if(text === "Switch on") {
       airdropStart = true;
@@ -59,18 +87,7 @@ bot.on("message", async (msg) => {
       const countU = await countUsers();
       bot.sendMessage(chatId, `Количество пользователей: ${countU}`)
     } else if (text === "Export CSV") {
-      const users = await UserModel.findAll();
-
-      const jsonUsers = users.map(user => user.toJSON());
-      
-      const fields = ['id', 'username', 'twitter', 'retweet', 'youtube', 'wallet'];
-      const opts = { fields };
-
-      const parser = new Parser(opts);
-      const csv = parser.parse(jsonUsers);
-
-      fs.writeFileSync('users_data.csv', csv);
-
+      await exportToCSV();
       bot.sendMessage(chatId, "Таблица успешно выгружена");
     }
   }
