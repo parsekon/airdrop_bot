@@ -54,7 +54,7 @@ bot.on("message", async (msg) => {
       airdropStart = false;
       return bot.sendMessage(chatId, "Airdrop выключен");
     } else if (text === "Statistics") {
-      const countU = countUsers();
+      const countU = await countUsers();
       bot.sendMessage(chatId, `Количество пользователей: ${countU}`)
     }
   }
