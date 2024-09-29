@@ -1,5 +1,7 @@
 require("dotenv").config();
 const TelegramApi = require("node-telegram-bot-api");
+const { Parser } = require("json2csv");
+const fs = require("fs");
 const sequelize = require("./db");
 const UserModel = require("./models");
 const token = process.env.TOKEN;
@@ -26,7 +28,7 @@ bot.onText(/\/admincommand/, (msg) => {
       reply_markup: {
         keyboard: [
           [{text: "Switch on"}, {text: "Switch off"}],
-          [{text: "Statistics"}, {text: "Export Excel"}]
+          [{text: "Statistics"}, {text: "Export CSV"}]
         ]
       }
     });
@@ -56,6 +58,20 @@ bot.on("message", async (msg) => {
     } else if (text === "Statistics") {
       const countU = await countUsers();
       bot.sendMessage(chatId, `Количество пользователей: ${countU}`)
+    } else if (text === "Export CSV") {
+      const users = await UserModel.findAll();
+
+      const jsonUsers = users.map(user => user.toJSON());
+      
+      const fields = ['id', 'username', 'twitter', 'retweet', 'youtube', 'wallet'];
+      const opts = { fields };
+
+      const parser = new Parser(opts);
+      const csv = parser.parse(jsonUsers);
+
+      fs.writeFileSync('users_data.csv', csv);
+
+      bot.sendMessage(chatId, "Таблица успешно выгружена");
     }
   }
 })
