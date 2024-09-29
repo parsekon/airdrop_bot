@@ -16,6 +16,7 @@ const airdropStart = true;
 const isAdmin = async (chatId, userId) => {
   try {
     const member = await bot.getChatMember(chatId, userId);
+    console.log("MEMBER >>>", member);
     return member.status === 'administrator' || member.status === 'creator';
   } catch (error) {
     console.error('Error checking admin status:', error);
