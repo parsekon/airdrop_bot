@@ -11,29 +11,13 @@ let notABots = {};
 let noYoutube = {};
 const airdropStart = true;
 
-// Функции администратора
-
-const isAdmin = async (chatId, userId) => {
-  try {
-    const member = await bot.getChatMember(chatId, userId);
-    console.log("MEMBER >>>", member);
-    return member.status === 'administrator' || member.status === 'creator';
-  } catch (error) {
-    console.error('Error checking admin status:', error);
-    return false;
-  }
-};
-
-bot.onText(/\/admincommand/, async (msg) => {
+bot.onText(/\/admincommand/, (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
 
-  // Проверяем, является ли пользователь администратором
-  const isUserAdmin = await isAdmin(chatId, userId);
+  console.log("User ID >>>", userId);
 
-  console.log("Status >>>", isUserAdmin);
-
-  if (isUserAdmin) {
+  if (userId.toString() === process.env.ADMIN_ID) {
     bot.sendMessage(chatId, 'Команда выполнена, так как вы администратор.');
   } else {
     bot.sendMessage(chatId, 'Эта команда доступна только администраторам.');
