@@ -64,7 +64,8 @@ bot.on("message", async (msg) => {
       // Добавляем заголовки столбцов
       worksheet.columns = [
         { header: 'ID', key: 'id', width: 10 },
-        { header: 'Username', key: 'username', width: 30 },
+        { header: 'Chat ID', key: 'chatId', width: 30 },
+        { header: 'Username', key: 'telegram', width: 30 },
         { header: 'Twitter', key: 'twitter', width: 30 },
         { header: 'Retweet', key: 'retweet', width: 30 },
         { header: 'YouTube', key: 'youtube', width: 30 },
