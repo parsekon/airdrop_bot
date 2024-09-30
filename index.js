@@ -30,7 +30,8 @@ bot.onText(/\/admincommand/, (msg) => {
         keyboard: [
           [{text: "Switch on"}, {text: "Switch off"}],
           [{text: "Statistics"}, {text: "Export"}]
-        ]
+        ],
+        resize_keyboard: true,
       }
     });
   }
