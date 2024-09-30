@@ -1,6 +1,7 @@
 require("dotenv").config();
 const TelegramApi = require("node-telegram-bot-api");
 const { Parser } = require("json2csv");
+const ExcelJS = require('exceljs');
 const fs = require("fs");
 const sequelize = require("./db");
 const UserModel = require("./models");
@@ -48,26 +49,37 @@ bot.on("message", async (msg) => {
     }
   }
 
-  const exportToCSV = async () => {
+  const exportToExcel = async () => {
     try {
-      // Получение данных из базы данных
-      const users = await UserModel.findAll();
+      await sequelize.authenticate();
   
-      // Преобразование данных в JSON
+      // Получаем данные пользователей
+      const users = await UserModel.findAll();
       const jsonUsers = users.map(user => user.toJSON());
   
-      // Определение полей для CSV-файла
-      const fields = ['id', 'username', 'twitter', 'retweet', 'youtube', 'wallet'];
-      const opts = { fields };
+      // Создаем новый Workbook (Excel файл)
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Users');
   
-      // Создание CSV с помощью json2csv
-      const parser = new Parser(opts);
-      const csv = parser.parse(jsonUsers);
+      // Добавляем заголовки столбцов
+      worksheet.columns = [
+        { header: 'ID', key: 'id', width: 10 },
+        { header: 'Username', key: 'username', width: 30 },
+        { header: 'Twitter', key: 'twitter', width: 30 },
+        { header: 'Retweet', key: 'retweet', width: 30 },
+        { header: 'YouTube', key: 'youtube', width: 30 },
+        { header: 'Wallet', key: 'wallet', width: 30 },
+      ];
   
-      // Запись CSV в файл
-      fs.writeFileSync('users_data.csv', csv);
+      // Добавляем данные
+      jsonUsers.forEach(user => {
+        worksheet.addRow(user);
+      });
   
-      bot.sendMessage(chatId, "Данные выгружены")
+      // Сохраняем файл Excel
+      await workbook.xlsx.writeFile('users_data.xlsx');
+  
+      console.log('Данные успешно выгружены в users_data.xlsx');
     } catch (error) {
       console.error('Ошибка при выгрузке данных:', error);
     }
@@ -84,7 +96,7 @@ bot.on("message", async (msg) => {
       const countU = await countUsers();
       bot.sendMessage(chatId, `Количество пользователей: ${countU}`)
     } else if (text === "Export CSV") {
-      await exportToCSV();
+      await exportToExcel();;
     }
   }
 })
