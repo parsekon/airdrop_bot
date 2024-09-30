@@ -98,7 +98,9 @@ bot.on("message", async (msg) => {
         Количество пользователей: ${countU} 
         Airdrop status: ${airdropStart ? 'Запущен' : 'Остановлен'}
         `)
-    } else if (text === "Export") {
+    } 
+    
+    if (text === "Export") {
       bot.sendMessage(chatId, 'Идет экспорт БД ....');
     }
   }
