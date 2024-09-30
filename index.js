@@ -94,7 +94,10 @@ bot.on("message", async (msg) => {
       return bot.sendMessage(chatId, "Airdrop выключен");
     } else if (text === "Statistics") {
       const countU = await countUsers();
-      bot.sendMessage(chatId, `Количество пользователей: ${countU}`)
+      bot.sendMessage(chatId, `
+        Количество пользователей: ${countU} 
+        Airdrop status: ${airdropStart ? 'Запущен' : 'Остановлен'}
+        `)
     } else if (text === "Export") {
       bot.sendMessage(chatId, 'Идет экспорт БД ....');
     }
