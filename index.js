@@ -177,13 +177,13 @@ bot.on("message", async (msg) => {
       `
       <b>Our official link ➡️</b>
 
-      <b>🌎 Website:</b> http://lunar-sphinx.com
+      <b>🌎 Website:</b> ${process.env.WEBSITE}
 
-      <b>📱 Twitter:</> https://x.com/Lunar_Sphinx
+      <b>📱 Twitter:</> ${process.env.TWITTER}
 
-      <b>🖨 Telegram:</b> @LunarSphinx777
+      <b>🖨 Telegram:</b> ${process.env.TELEGRAMGROUP}
 
-      <b>💰 Token</b>: <a href="https://etherscan.io/token/0x108ce14704263c9e2db314e03929d5cf044756d3">0x108ce14704263c9e2db314e03929d5cf044756d3</a>
+      <b>💰 Token</b>: <a href="https://etherscan.io/token/${process.env.SMARTCONTRACT}">${process.env.SMARTCONTRACT}</a>
     `,
       {
         parse_mode: "HTML",
@@ -240,7 +240,7 @@ bot.on("callback_query", async (msg) => {
   
 ✍️  The first 1000 valid participants will be rewarded.
 
-🏆  Total Airdrop Pool: 100,000,000 LUNARSPHINX 
+🏆  Total Airdrop Pool: 100,000,000 ${process.env.NAMEPROJECT} 
 
 🔵  Basic actions:
 
