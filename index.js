@@ -1,7 +1,7 @@
 require("dotenv").config();
 const TelegramApi = require("node-telegram-bot-api");
 const { Parser } = require("json2csv");
-const ExcelJS = require('exceljs');
+const ExcelJS = require("exceljs");
 const fs = require("fs");
 const sequelize = require("./db");
 const UserModel = require("./models");
@@ -25,14 +25,14 @@ bot.onText(/\/admincommand/, (msg) => {
   console.log("User ID >>>", userId);
 
   if (userId.toString() === adminId) {
-    bot.sendMessage(chatId, 'Вам доступно меню администратора', {
+    bot.sendMessage(chatId, "Вам доступно меню администратора", {
       reply_markup: {
         keyboard: [
-          [{text: "Switch on"}, {text: "Switch off"}],
-          [{text: "Statistics"}, {text: "Export"}]
+          [{ text: "Switch on" }, { text: "Switch off" }],
+          [{ text: "Statistics" }, { text: "Export" }],
         ],
         resize_keyboard: true,
-      }
+      },
     });
   }
 });
@@ -48,63 +48,66 @@ bot.on("message", async (msg) => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const exportToExcel = async () => {
     try {
       await sequelize.authenticate();
-  
+
       // Получаем данные пользователей
       const users = await UserModel.findAll();
-      const jsonUsers = users.map(user => user.toJSON());
-  
+      const jsonUsers = users.map((user) => user.toJSON());
+
       // Создаем новый Workbook (Excel файл)
       const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('Users');
-  
+      const worksheet = workbook.addWorksheet("Users");
+
       // Добавляем заголовки столбцов
       worksheet.columns = [
-        { header: 'ID', key: 'id', width: 10 },
-        { header: 'Chat ID', key: 'chatId', width: 30 },
-        { header: 'Username', key: 'telegram', width: 30 },
-        { header: 'Twitter', key: 'twitter', width: 30 },
-        { header: 'Retweet', key: 'retweet', width: 30 },
-        { header: 'YouTube', key: 'youtube', width: 30 },
-        { header: 'Wallet', key: 'wallet', width: 30 },
+        { header: "ID", key: "id", width: 10 },
+        { header: "Chat ID", key: "chatId", width: 30 },
+        { header: "Username", key: "telegram", width: 30 },
+        { header: "Twitter", key: "twitter", width: 30 },
+        { header: "Retweet", key: "retweet", width: 30 },
+        { header: "YouTube", key: "youtube", width: 30 },
+        { header: "Wallet", key: "wallet", width: 30 },
       ];
-  
+
       // Добавляем данные
-      jsonUsers.forEach(user => {
+      jsonUsers.forEach((user) => {
         worksheet.addRow(user);
       });
-  
+
       // Сохраняем файл Excel
-      await workbook.xlsx.writeFile('users_data.xlsx');
-      bot.sendMessage(chatId, 'Идет экспорт БД ....');
-      console.log('Данные успешно выгружены в users_data.xlsx');
+      await workbook.xlsx.writeFile("users_data.xlsx");
+      bot.sendMessage(chatId, "Идет экспорт БД ....");
+      console.log("Данные успешно выгружены в users_data.xlsx");
     } catch (error) {
-      console.error('Ошибка при выгрузке данных:', error);
+      console.error("Ошибка при выгрузке данных:", error);
     }
   };
 
-  if(userId.toString() === adminId) {
-    if(text === "Switch on") {
+  if (userId.toString() === adminId) {
+    if (text === "Switch on") {
       airdropStart = true;
       return bot.sendMessage(chatId, "Airdrop включен");
     } else if (text === "Switch off") {
       airdropStart = false;
       return bot.sendMessage(chatId, "Airdrop выключен");
-    } else if    (text === "Statistics") {
+    } else if (text === "Statistics") {
       const countU = await countUsers();
-      bot.sendMessage(chatId, `
+      bot.sendMessage(
+        chatId,
+        `
         Количество пользователей: ${countU} 
-        Airdrop status: ${airdropStart ? 'Запущен' : 'Остановлен'}
-        `)
+        Airdrop status: ${airdropStart ? "Запущен" : "Остановлен"}
+        `
+      );
     } else if (text === "Export") {
       await exportToExcel();
     }
   }
-})
+});
 
 // Старт бота
 bot.on("message", (msg) => {
@@ -200,7 +203,9 @@ bot.on("message", async (msg) => {
 
     <b>📺 Your video:</b> ${user.youtube ?? "no"}
 
-    <b>💰 Your wallet:</b> <a href="https://etherscan.io/address/${user.wallet}">${user.wallet}</a>
+    <b>💰 Your wallet:</b> <a href="https://etherscan.io/address/${
+      user.wallet
+    }">${user.wallet}</a>
     
     `,
       {
@@ -209,8 +214,6 @@ bot.on("message", async (msg) => {
       }
     );
   }
-
-
 });
 
 bot.on("callback_query", async (msg) => {
@@ -351,6 +354,7 @@ bot.on("callback_query", async (msg) => {
       chatId,
       `Ok! Let's keep your contacts. Enter the link to your Twitter account:`
     );
+
     bot.once("message", async (msg) => {
       const userTwitter = msg.text;
 
@@ -364,20 +368,39 @@ bot.on("callback_query", async (msg) => {
 
       console.log("USER_2 >>>", user);
 
-      writeMessages[chatId] = await bot.sendMessage(
-        chatId,
-        `You have entered:: ${userTwitter}`,
-        {
-          reply_markup: {
-            inline_keyboard: [
-              [
-                { text: "edit", callback_data: "submit" },
-                { text: "ok", callback_data: "submitRetweet" },
+      if (
+        userTwitter.length > 15 && (userTwitter.includes("https://x.com/") ||
+        userTwitter.includes("https://twitter.com/"))
+      ) {
+        writeMessages[chatId] = await bot.sendMessage(
+          chatId,
+          `You have entered: ${userTwitter}`,
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: "edit", callback_data: "submit" },
+                  { text: "ok", callback_data: "submitRetweet" },
+                ],
               ],
-            ],
-          },
-        }
-      );
+            },
+          }
+        );
+      } else {
+        writeMessages[chatId] = await bot.sendMessage(
+          chatId,
+          `You entered wrong link.`,
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: "Try again", callback_data: "submit" }
+                ],
+              ],
+            },
+          }
+        );
+      }
     });
   }
 
@@ -519,15 +542,15 @@ bot.on("callback_query", async (msg) => {
         : "No video"
     }
 
-    <b>Your Wallet:</b> <a href="https://etherscan.io/address/${user.wallet}">${user.wallet}</a>
+    <b>Your Wallet:</b> <a href="https://etherscan.io/address/${user.wallet}">${
+        user.wallet
+      }</a>
     `,
       {
         parse_mode: "HTML",
         disable_web_page_preview: true,
         reply_markup: {
-          keyboard: [
-            [{ text: "Social" }], [{ text: "Airdrop" }]
-        ],
+          keyboard: [[{ text: "Social" }], [{ text: "Airdrop" }]],
           resize_keyboard: true,
         },
       }
