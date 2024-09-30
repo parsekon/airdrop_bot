@@ -29,7 +29,7 @@ bot.onText(/\/admincommand/, (msg) => {
       reply_markup: {
         keyboard: [
           [{text: "Switch on"}, {text: "Switch off"}],
-          [{text: "Statistics"}, {text: "Export CSV"}]
+          [{text: "Statistics"}, {text: "Export"}]
         ]
       }
     });
@@ -95,8 +95,8 @@ bot.on("message", async (msg) => {
     } else if (text === "Statistics") {
       const countU = await countUsers();
       bot.sendMessage(chatId, `Количество пользователей: ${countU}`)
-    } else if (text === "Export CSV") {
-      await exportToExcel();;
+    } else if (text === "Export") {
+      await exportToExcel();
     }
   }
 })
