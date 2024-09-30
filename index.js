@@ -96,7 +96,7 @@ bot.on("message", async (msg) => {
       const countU = await countUsers();
       bot.sendMessage(chatId, `Количество пользователей: ${countU}`)
     } else if (text === "Export") {
-      bot.sendMessage(chatId, 'Идет экспорт БД ....')ж
+      bot.sendMessage(chatId, 'Идет экспорт БД ....');
     }
   }
 })
