@@ -78,7 +78,7 @@ bot.on("message", async (msg) => {
   
       // Сохраняем файл Excel
       await workbook.xlsx.writeFile('users_data.xlsx');
-  
+      bot.sendMessage(chatId, 'Идет экспорт БД ....');
       console.log('Данные успешно выгружены в users_data.xlsx');
     } catch (error) {
       console.error('Ошибка при выгрузке данных:', error);
@@ -99,7 +99,7 @@ bot.on("message", async (msg) => {
         Airdrop status: ${airdropStart ? 'Запущен' : 'Остановлен'}
         `)
     } else if (text === "Export") {
-      bot.sendMessage(chatId, 'Идет экспорт БД ....');
+      await exportToExcel();
     }
   }
 })
