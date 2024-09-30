@@ -50,9 +50,6 @@ bot.on("message", async (msg) => {
 
   const exportToCSV = async () => {
     try {
-      // Подключение к базе данных
-      await sequelize.authenticate();
-  
       // Получение данных из базы данных
       const users = await UserModel.findAll();
   
