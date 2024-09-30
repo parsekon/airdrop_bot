@@ -84,7 +84,7 @@ bot.on("message", async (msg) => {
       const countU = await countUsers();
       bot.sendMessage(chatId, `Количество пользователей: ${countU}`)
     } else if (text === "Export CSV") {
-      exportToCSV();
+      await exportToCSV();
     }
   }
 })
