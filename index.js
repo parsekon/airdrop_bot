@@ -423,7 +423,10 @@ bot.on("callback_query", async (msg) => {
         await user.update({ retweet: linkRetweet });
       }
 
-      console.log("USER 3>>>", user);
+      if (
+        linkRetweet.length > 15 && (linkRetweet.includes("https://x.com/") ||
+        linkRetweet.includes("https://twitter.com/"))
+      ) {
 
       writeMessages[chatId] = await bot.sendMessage(
         chatId,
@@ -439,7 +442,24 @@ bot.on("callback_query", async (msg) => {
           },
         }
       );
+    } else {
+      writeMessages[chatId] = await bot.sendMessage(
+        chatId,
+        `You entered wrong link.`,
+        {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: "Try again", callback_data: "submitRetweet" }
+              ],
+            ],
+          },
+        }
+      );
+    }
+  
     });
+
   }
 
   if (data === "submitWalletOrYoutube" && !noYoutube[chatId]) {
